@@ -376,4 +376,86 @@ class GreetingServiceTest {
 gradlew test
 ```
 5. After we get the message that the **build successful**, we run the the testinging class which is **GreetingServiceTest** in here and hit the play button. A video, is available in the documentation as well and we get the desired output.
+6. Just a note, I had to take a keen look at the documentation and with the firm believe in myself was able to find out that the testing class was also under **hello** package.
+
+![instruction}(https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/1.PNG)
+
+1. create an implementation of this interface called DummyUserService
+2. Mark it as a service.
+
+3. Inject service GreetingService (use interface and not implementation)
+
+```
+package com.emse.spring.faircorp.hello;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class DummyUserService implements UserService{
+    @Override
+    public void greetAll() {
+
+    }
+    @Autowired
+    GreetingService greetingService;
+
+}
+```
+
+![Situation}(https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/2.PNG)
+
+4. Write greetAll method. You have to create a List of String with 2 elements ("Elodie" and "Charles") and for each one you have to call greet method of the GreetingService
+5. Testing with the below,
+```
+package com.emse.spring.faircorp.hello;
+
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+@ExtendWith(OutputCaptureExtension.class)
+@ExtendWith(SpringExtension.class) // (1)
+class DummyUserServiceTest {
+
+    @Configuration // (2)
+    @ComponentScan("com.emse.spring.faircorp.hello")
+    public static class DummyUserServiceTestConfig{}
+
+    @Autowired // (3)
+    public DummyUserService dummyUserService;
+
+    @Test
+    public void testGreetingAll(CapturedOutput output) {
+        dummyUserService.greetAll();
+        Assertions.assertThat(output).contains("Hello, Elodie!", "Hello, Charles!");
+    }
+}
+```
+
+- Now, again, I did, 
+```
+gradlew test
+```
+- build successful and then the play button
+- output below
+
+![output}(https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/3.PNG)
+
+- Now, Instructions
+1. We use SpringExtension to link our test to Spring. With this annotation a Spring Context will be loaded when this test will run
+2. We have to configure how the context is loaded. In our case we added @ComponentScan("com.emse.spring.faircorp.hello") to help Spring to find our classes. In our app this scan is made by SpringBoot, but in our test SpringBoot is not loaded
+3. As our test has is own Spring Context we can inject inside the bean to test
+
+You can verify that your implementation is working properly by running 
+```
+gradlew test
+``` 
+
 
