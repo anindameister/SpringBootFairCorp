@@ -378,7 +378,7 @@ gradlew test
 5. After we get the message that the **build successful**, we run the the testinging class which is **GreetingServiceTest** in here and hit the play button. A video, is available in the documentation as well and we get the desired output.
 6. Just a note, I had to take a keen look at the documentation and with the firm believe in myself was able to find out that the testing class was also under **hello** package.
 
-![instruction}(https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/1.PNG)
+![instruction](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/1.PNG)
 
 1. create an implementation of this interface called DummyUserService
 2. Mark it as a service.
@@ -403,7 +403,7 @@ public class DummyUserService implements UserService{
 }
 ```
 
-![Situation}(https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/2.PNG)
+![Situation](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/2.PNG)
 
 4. Write greetAll method. You have to create a List of String with 2 elements ("Elodie" and "Charles") and for each one you have to call greet method of the GreetingService
 5. Testing with the below,
@@ -446,7 +446,7 @@ gradlew test
 - build successful and then the play button
 - output below
 
-![output}(https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/3.PNG)
+![output](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/3.PNG)
 
 - Now, Instructions
 1. We use SpringExtension to link our test to Spring. With this annotation a Spring Context will be loaded when this test will run
