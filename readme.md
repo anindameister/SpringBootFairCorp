@@ -448,14 +448,145 @@ gradlew test
 
 ![output](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/3.PNG)
 
-- Now, Instructions
-1. We use SpringExtension to link our test to Spring. With this annotation a Spring Context will be loaded when this test will run
-2. We have to configure how the context is loaded. In our case we added @ComponentScan("com.emse.spring.faircorp.hello") to help Spring to find our classes. In our app this scan is made by SpringBoot, but in our test SpringBoot is not loaded
-3. As our test has is own Spring Context we can inject inside the bean to test
+- Now, Instructions in regards to how the testing part has been written.
 
-You can verify that your implementation is working properly by running 
+![output](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/4.PNG)
+
+- Instructions again
+
+![Instructions again](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/5.PNG)
+
+- Complete code
 ```
-gradlew test
-``` 
+package com.emse.spring.faircorp;
+
+import com.emse.spring.faircorp.hello.GreetingService;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+// (1)
+@Configuration
+public class FaircorpApplicationConfig {
+
+    // (2)
+    @Bean
+    public CommandLineRunner greetingCommandLine(GreetingService greetingService) { // (3)
+        return new CommandLineRunner() {
+            @Override
+            public void run(String... args) throws Exception {
+                greetingService.greet("Spring");
+                // (4)
+            }
+        };
+    }
+}
+```
+- output
+
+![output](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/6.PNG)
+
+### Other cases
+- Now, we’re going to test a few cases to understand how a Spring Application reacts to some situations. For each case, try the suggested modifications, restart your application and see what happens.
+
+- Of course, after each case, revert those changes, to get "back to normal". (You can use Git for that)
+
+1. What happens if you comment the @Component / @Service annotation on your ConsoleGreetingService?
+
+- did that, just commented @Service
+- Reading the error
+```
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+2020-12-31 00:00:08.422 ERROR 16940 --- [  restartedMain] o.s.b.d.LoggingFailureAnalysisReporter   : 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Field greetingService in com.emse.spring.faircorp.hello.DummyUserService required a bean of type 'com.emse.spring.faircorp.hello.GreetingService' that could not be found.
+
+The injection point has the following annotations:
+	- @org.springframework.beans.factory.annotation.Autowired(required=true)
 
 
+Action:
+
+Consider defining a bean of type 'com.emse.spring.faircorp.hello.GreetingService' in your configuration.
+
+
+Process finished with exit code 0
+```
+- we found that **GreetingServiceTest** uses the class **ConsoleGreetingService**'s object. Since, @Service has been commented out and so this is not happening anymore as in the GreetingServiceTest is not able to use the object anymore. So, testing is failing.
+
+2. Now, try adding **AnotherConsoleGreetingService** (which says "Bonjour" instead of "Hello"), **marked as a component as well.** The highlighted statement makes me feel that **@Service is equivalent to @Component**
+
+<li>
+    @Component
+    <ul><li>This tells that, I authorise this class to be used as bean</li></ul>
+
+```
+package com.emse.spring.faircorp.hello;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class AnotherConsoleGreetingService implements GreetingService{
+    @Override
+    public void greet(String name) {
+        System.out.println("Bonjour, "+name+"!");
+    }
+}
+```
+2.Contd.. Try again this time after adding a @Primary annotation on ConsoleGreetingService.
+
+
+3.	Finally, try the following - what happens and why?
+
+```
+@Service
+public class CycleService {
+
+  private final ConsoleGreetingService consoleGreetingService;
+
+  @Autowired
+  public CycleService(ConsoleGreetingService consoleGreetingService) {
+    this.consoleGreetingService = consoleGreetingService;
+  }
+}
+```
+- the below code has **1 related problem**.. This problem is coming because of the failed testing by **GreetingServiceTest**
+```
+GreetingService greetingService = new ConsoleGreetingService();
+```
+- an argument is required there..
+```
+package com.emse.spring.faircorp.hello;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Service;
+
+//@Service
+@Primary
+public class ConsoleGreetingService implements GreetingService{
+
+    private final CycleService cycleService;
+
+    @Autowired
+    public ConsoleGreetingService(CycleService cycleService) {
+        this.cycleService = cycleService;
+    }
+
+    @Override
+    public void greet(String name) {
+        System.out.println("Hello, "+name+"!");
+    }
+}
+
+```
+- we do have an output but the test is failing, got to fix that
+```
+Bonjour, Spring!
+```
