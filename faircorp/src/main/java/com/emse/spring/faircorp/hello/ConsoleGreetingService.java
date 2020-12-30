@@ -4,15 +4,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
-//@Service
-@Primary
+//@Service("one")
+//@Primary
+@Service
 public class ConsoleGreetingService implements GreetingService{
 
-    private final CycleService cycleService;
+//    private final CycleService cycleService;
+//    @Autowired
+//    public ConsoleGreetingService(CycleService cycleService) {
+//        this.cycleService = cycleService;
+//    }
 
-    @Autowired
-    public ConsoleGreetingService(CycleService cycleService) {
-        this.cycleService = cycleService;
+    public ConsoleGreetingService( ) {
+
     }
 
     @Override
