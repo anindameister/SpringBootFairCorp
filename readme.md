@@ -591,7 +591,7 @@ public class ConsoleGreetingService implements GreetingService{
 Bonjour, Spring!
 ```
 - Anyway, if we look closely into the code, we would find that we are injecting into cycleService, consoleGreetingService and vice-versa.
-Such kind of closed loop was not supposed to happen. Anyway, this part was also not supposed to be tested. As of right now, am not disturbing the Dharmalingam code in intellij. I would later save and then modify the code, if required.The current situation of the code gives no error to tests or anything further. Moving to Database
+Such kind of closed loop was not supposed to happen. Anyway, this part was also not supposed to be tested. As of right now, am not disturbing the current code in intellij. I would later save and then modify the code, if required.The current situation of the code gives no error to tests or anything further. Moving to Database
 <hr>
 
 ## Spring in practice : database and JPA 
@@ -656,6 +656,341 @@ SELECT * FROM ROOM;
 
 ### Java and JDBC
 - To understand the value of Spring and JPA, it is important to see the code that would have to be done if we wanted to directly use the JDBC API which is a low level API requiring a lot of code.
+
+- This entire thing is not part of the task and hence skipping all of this and moving to JPA.
+
+### JPA
+- The Java Persistence API (JPA) is a Java application programming interface specification that describes the management of relational data in applications using Java Platform, Standard Edition and Java Platform, Enterprise Edition
+- Hibernate ORM is the JPA implementation that we’re going to use in this lab.
+- We’re going to use Spring Data JPA to store and retrieve data in our relational database.
+- With Persistence API/Framework, the approach is to :
+    - work object (Java entities) and not with database table
+    - add annotations to map entity properties to table columns
+    - generate common database request (Create, Update, Delete, Read)
+    - fill the SQL imperfections: inheritance, relationships, customs types, validation
+- Spring provides several sub projects to make database interactions easy
+
+- Do not confuse Spring Data with Spring Data JPA. We can read on in the offical doc that "Spring Data’s mission is to provide a familiar and consistent, Spring-based programming model for data access while still retaining the special traits of the underlying data store. It makes it easy to use data access technologies, relational and non-relational databases, map-reduce frameworks, and cloud-based data services. This is an umbrella project which contains many subprojects that are specific to a given database […​]
+Spring Data JPA is part of Spring Data, lets implement JPA based repositories. It makes it easier to build Spring-powered applications that use data access technologies."
+
+## JPA Entity
+- Let’s take the example of a Java class named Sensor and see how to use JPA to bind it to the SP_SENSOR table of our database.
+```
+package com.emse.spring.faircorp;
+import javax.persistence.*;
+
+
+@Entity // (1):indicates that this class is an entity managed by Hibernate
+@Table(name = "SP_SENSOR") // (2):you can customize the table name (optional if table name = entity name)
+
+public class Sensor {
+    @Id // (3):you have always an id annotated with @javax.persistence.Id (auto generated in this example). This ID is immutable(cannot be changed) (as the primary key in the database)
+    @GeneratedValue
+    private Long id;
+
+    @Column(nullable=false, length=255)  // (4):by default, each property is mapped to a column. You can customize the nullability or the column name.
+    private String name;
+
+    private String description;
+
+    @Column(name = "power") // (4).
+    private Integer defaultPowerInWatt;
+
+    @Transient // (5):If a property should not be persisted/continued, use
+    private Integer notImportant;
+
+    @Enumerated(EnumType.STRING) // (6):Java enum persisted as a String (choose always EnumType.STRING)
+
+    private PowerSource powerSource; //Enum of powerSource have been created
+
+    public Sensor() { // (7).:an entity must have an empty constructor(public or protected).An empty constructor is needed to create a new instance via reflection (using Class<T>.newInstance()) by Hibernate which has to instantiate your Entity dynamically. If you don’t provide any additional constructors with arguments for the class, you don’t need to provide an empty constructor because you get one per default. Java always gives you a default invisible empty constructor. If an argument constructor is provided in your class, then jvm will not add the no-argument constructor.
+
+
+    }
+
+    public Sensor(String name) { // (8). you can add (and you should) a constructor to build an object with all required properties
+        this.name = name;
+    }
+
+    public Long getId() { // (9).you have to define a getter and a setter for each property
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Integer getDefaultPowerInWatt() {
+        return defaultPowerInWatt;
+    }
+
+    public void setDefaultPowerInWatt(Integer defaultPowerInWatt) {
+        this.defaultPowerInWatt = defaultPowerInWatt;
+    }
+
+    public Integer getNotImportant() {
+        return notImportant;
+    }
+
+    public void setNotImportant(Integer notImportant) {
+        this.notImportant = notImportant;
+    }
+
+    public PowerSource getPowerSource() {
+        return powerSource;
+    }
+
+    public void setPowerSource(PowerSource powerSource) {
+        this.powerSource = powerSource;
+    }
+}
+
+```
+- I am skipping everything intermediate and moving to 
+## Lab 4 : JPA
+
+<!-- Step 1. I have deleted the previously created sensor class -->
+- It’s time for you to start to build your real application which is able to manage sensors in a building. The management of the sanitary conditions (COVID-19 pandemic, pollution), user comfort, and energy efficiency, require concurrent management of window openings in the École des Mines buildings.
+- It is necessary to ventilate as much as possible to limit the spread of the cirus and air pollution in general, but as winter approaches it will become important to heat the buildings to ensure user comfort. Windows should be open during and after classes, closed at night or in case of heavy rain or severe cold. Thus the management of the health crisis becomes concurrent with the quest for energy efficiency in the building.
+- We will now create an application which will able to manage the building windows.
+    - the building has an outside temperature, and rooms
+    - each room has zero or more heaters, has zero or more windows, a name, a floor, a current temperature, a target temperature.
+    - each heater has a name, an on or off status, possibly a power.
+    - each window has a name, an a status open or closed
+#### Entity creation
+- Create a Java enum called HeaterStatus in package com.emse.spring.faircorp.model. This enum has 2 values : ON and OFF
+
+```
+package com.emse.spring.faircorp.model;
+
+public enum Status {
+    ON, OFF
+}
+```
+- Create another Java enum called WindowStatus in package com.emse.spring.faircorp.model. This enum has 2 values : OPEN and CLOSED
+
+```
+package com.emse.spring.faircorp.model;
+
+public enum WindowStatus {
+    OPEN,CLOSED
+}
+```
+- Create an Entity called Window in package com.emse.spring.faircorp.model (an entity is a class)
+```
+
+package com.emse.spring.faircorp.model;
+
+import javax.persistence.*;
+
+@Entity
+@Table(name = "RWINDOW")
+public class Window {
+        @Id
+        @GeneratedValue
+        private Long id;
+
+        @Column(nullable=false, length=255)
+        private String name;
+
+        @Column(nullable=false)
+        @Enumerated(EnumType.STRING)
+        private WindowStatus windowStatus;
+
+//        @Column(nullable=false)
+        @ManyToOne
+        private Room room;
+
+        public Window() {
+        }
+
+        public Window(Room room, String name, WindowStatus status) {
+            this.room  =room;
+            this.windowStatus = status;
+            this.name = name;
+        }
+
+        public Window(String name, WindowStatus status) {
+            this.windowStatus = status;
+            this.name = name;
+        }
+
+        public Long getId() {
+            return this.id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public WindowStatus getWindowStatus() {
+            return windowStatus;
+        }
+
+        public void setWindowStatus(WindowStatus windowStatus) {
+            this.windowStatus = windowStatus;
+        }
+        public Room getRoom() {
+            return room;
+        }
+
+        public void setRoom(Room room) {
+            this.room = room;
+        }
+}
+```
+Used the good annotations to
+
+(1) Mark this class as a JPA entity
+
+(2) You must give a different name for your table. H2 can’t call a table Window because it is a reserved word. So call it RWINDOW
+
+(3) Declare this field as the table ID. This ID must to be auto generated
+
+(4) This field must be not nullable
+
+(5) WindowStatus is also not nullable, and this field is an enumeration (you have to use @Enumerated). You have to add these informations
+
+#### Instruction contd..
+
+- Write now the Heater entity with
+    - an auto generated id
+    - a non nullable String name
+    - a nullable Long power
+    - a non nullable room
+    - a non nullable status (ON, OFF). This field is an enumeration (you have to use @Enumerated).
+    - create a constructor with non nullable fields and a default constructor
+
+```
+package com.emse.spring.faircorp.model;
+
+import javax.persistence.*;
+
+@Entity
+@Table(name = "HEATER")
+public class Heater {
+
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Column(nullable=false, length=255)
+    private String name;
+
+    @Column(nullable=true)
+    private  Long power;
+
+    //    @Column(nullable=false)
+    @ManyToOne
+    private Room room;
+
+    @Column(nullable=false)
+    @Enumerated(EnumType.STRING)
+    private HeaterStatus heaterStatus;
+
+    public Heater(){
+    }
+
+    public Heater(Long id, String name,  HeaterStatus heaterStatus) {
+        this.id = id;
+        this.name = name;
+        this.heaterStatus=  heaterStatus;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Long getPower() {
+        return power;
+    }
+
+    public Room getRoom() {
+        return room;
+    }
+//    public Room getHeaterStatus() {
+//        return heaterStatus;
+//    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPower(Long power) {
+        this.power = power;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
+    }
+
+    public void setHeaterStatus(HeaterStatus heaterStatus) {
+        this.heaterStatus = heaterStatus;
+    }
+}
+```
+
+- the enum class
+```
+package com.emse.spring.faircorp.model;
+
+public enum HeaterStatus {
+    ON, OFF
+}
+```
+
+#### Instructions contd..
+- the Room entity
+    - an auto generated id
+    - a non nullable floor (Integer)
+    - a non nullable String name
+    - a current temperature (Double)
+    - a target temperature (Double)
+    - a list of heaters. You have to define a bidirectional association between Room and Heater
+    - a list of windows. You have to define a bidirectional association between Room and Window : update the Window entity constructor to always send the room when a room is created, ie add an argument Room in the Window constructor
+    - create a constructor with non nullable fields and a default constructor
+
+- exact h2 status
+
+![exact h2 status](https://github.com/anindameister/WebDevelopmentClass/blob/main/snaps/9.PNG)
+
+
+
+
+
+
 
 
 
