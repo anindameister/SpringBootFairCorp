@@ -1671,6 +1671,35 @@ gradlew --continuous bootRun
 
 ![CORS usage is required](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/25.PNG)
 
+- I just recalled that, I dont have anything in regards to RoomController, just like the above WindowController. I believe, DevMind is asking us to create that RoomController first without the CORS annotation=>visualise the error=>then use Cors annotation and check again
+
+- so created RoomController.java under controller package
+```
+package com.emse.spring.faircorp.controller;
+
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class RoomController {
+}
+```
+- restarting the app and would check the links, http://localhost:8080 and http://localhost:8080/api/rooms
+- BTW, I have not restarted the app with the entryClassOfSpring because of my recalling of the JSP's jasper thingy. Similarly, I have implemented additionally, swagger, like the way I tried for jasper. 
+- now, the links contains the same exact output with no changes, gonna use the Cors annotation now for the RoomController
+- No change, even with the Cors annotation, the final program is as follows
+```
+package com.emse.spring.faircorp.controller;
+
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RestController;
+
+@CrossOrigin
+@RestController
+public class RoomController {
+}
+
+```
+
 
 
 
