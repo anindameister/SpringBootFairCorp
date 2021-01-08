@@ -54,4 +54,13 @@ public class Window {
     public void setWindowStatus(WindowStatus windowStatus) {
         this.windowStatus = windowStatus;
     }
+
+    public Room getRoom() {
+        return room;
+
+    }
+    public void setRoom(Room room) {
+        this.room = room;
+    }
+
 }

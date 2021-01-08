@@ -1264,6 +1264,439 @@ class WindowDaoTest {
 <!-- ![lastpart ](https://github.com/anindameister/WebDevelopmentClass/blob/main/snaps/doubt2.PNG) -->
 ![lastpart](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/doubt2.PNG)
 
+# Spring in practice : REST service
+
+- Spring MVC is the Web Framework built in Spring;
+- It helps you write web applications and takes care of a lot of boilerplate code, so you just have to focus on your application features.
+- With Spring Web (Spring MVC) you can write screens with a template solution which are used to generate HTML. But we don’t use this solution in this course. We will see how to write REST services. However if you are interested you can read <a href="https://docs.spring.io/spring-framework/docs/current/reference/html/web.html#mvc-view">official documentation.</a>
+
+- diagramatic visualisation of the entire
+
+![diagramatic visualisation of the entire](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/12.PNG)
+
+- With Spring Web you can expose REST services to another app (web api, JS app, android app…​). This is the purpose of this lesson. You will learn how to develop endpoints on a backend application. **These REST endpoints will be used later by a JS app or an Android app.**
+
+- The below diagram shows, how the backendSpringBoot's RestController exists at one end and this RestController is connected to **ControllerOfJSFrameworkPROBABLY** with the help of cloud
+
+- backend and front end connected through cloud
+
+![backend and front end connected through cloud](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/13.PNG)
+
+#### Data Transfer Object
+
+- A DTO is an object that carries data between processes. Data need to be serializable to go across the HTTP connection
+
+- In order to exchange data, we would need Json data. So a website sends json data on GET requests. Then we POST json. SO json is important. We used interface to extend JpaRepository which in turn would use CrudRepository along with JpaRepository features.We did this in the previoud i.e. database section. Moreover JpaRepository returns list. Such listJavaObjects are transformed to json by **Jackson** which is available in the gradle for Spring Boot.
+
+- The below diagram shows the backend which includes database on the left. And also, frontend on the right. Frontend and Backend would exchange data with json and hence jackson would be used and this jackson has been mentioned in the diagram
+
+![backend on the left and front end on the right](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/14.PNG)
+
+- Serialization is the process of translating data structures or object into a format that can be transmitted.
+- In our situation, the format that can be transmitted is json and to achieve that format we would use jackson library which comes with springBoot. Just recall that, if we would have chosen xml then we would have had to implement manually into gradle, a 3rd party library.
+- Our attempt here, is to do serialisation. The input to the serialisation are the private objects and these private objects are being accessed with getters&setters
+- now, created a **dto** package and inside that, tried to copy and paste the code for **WindowDto** that's available in the documentation.
+- Tried to import the relavant packages. Later, found that **getRoom** method is asking to create a getter&setter in the model.Window, so did that appropriately
+- putting the additional code of the **model.Window**
+```
+public Room getRoom() {
+        return room;
+
+    }
+    public void setRoom(Room room) {
+        this.room = room;
+    }
+```
+- Refactored code of model.Window is as below,
+```
+package com.emse.spring.faircorp.model;
+import javax.persistence.*;
+
+@Entity// (1)
+@Table(name = "RWINDOW")// (2)
+public class Window {
+    @Id// (3)
+    @GeneratedValue
+    private Long id;
+
+    @Column(nullable=false, length=255)// (4)
+    private String name;
+
+    @Column(nullable=false)
+    @Enumerated(EnumType.STRING)// (5)
+    private WindowStatus windowStatus;
+
+    @ManyToOne
+    private Room room;
+
+    public Window() {
+    }
+
+    public Window(Room room,String name, WindowStatus status) {
+        this.room  =room;
+        this.windowStatus = status;
+        this.name = name;
+    }
+    public Window(String name, WindowStatus status) {
+        this.windowStatus = status;
+        this.name = name;
+    }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public WindowStatus getWindowStatus() {
+        return windowStatus;
+    }
+
+    public void setWindowStatus(WindowStatus windowStatus) {
+        this.windowStatus = windowStatus;
+    }
+
+    public Room getRoom() {
+        return room;
+
+    }
+    public void setRoom(Room room) {
+        this.room = room;
+    }
+
+}
+```
+- now the code that is modified based on the requirement but originally it has been copied fromm the documentation
+- WindowDto
+```
+package com.emse.spring.faircorp.dto;
+
+import com.emse.spring.faircorp.model.Window;
+import com.emse.spring.faircorp.model.WindowStatus;
+
+public class WindowDto {
+    private Long id;
+    private String name;
+    private WindowStatus windowStatus;
+    private String roomName;
+    private Long roomId;
+
+    public WindowDto() {
+    }
+
+    public WindowDto(Window window) {
+        this.id = window.getId();
+        this.name = window.getName();
+        this.windowStatus = window.getWindowStatus();
+        this.roomName = window.getRoom().getName();
+        this.roomId = window.getRoom().getId();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public WindowStatus getWindowStatus() {
+        return windowStatus;
+    }
+
+    public void setWindowStatus(WindowStatus windowStatus) {
+        this.windowStatus = windowStatus;
+    }
+
+    public String getRoomName() {
+        return roomName;
+    }
+
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
+    }
+
+    public Long getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(Long roomId) {
+        this.roomId = roomId;
+    }
+}
+```
+- DTO will be used to transfer and to receive data in our REST controllers (entry point in our Java webapp).
+
+- Very often we find a constructor with the entity allowing to build a new instance. But beware, a DTO must always have an empty constructor. Libraries used to serialize or deserialize an object use the Java reflection API. In our case we will have a constructor allowing to build a WindowDto from Window entity.
+
+![backend on the left and front end on the right](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/doubt3.PNG)
+
+## HTTP
+
+- The Hypertext Transfer Protocol (HTTP) is an application protocol used for data communication on the World Wide Web.
+- HTTP defines methods (sometimes referred to as verbs) to indicate the desired action to be performed on the identified resource
+- A resource can be an image, a video, an HTML page, a JSON document.
+- To receive a response you have to send a request with a verb in a client or an application as Curl, Wget…​. or with a website
+
+- in the below diagram, webApp is the SpringBootApp. Recall the difference between app and project from the Django.
+- client sends request using the http verb which is received by the controller of the web app and this controller sends resource like html/json/etc to the client
+
+- client HTTPverbs request Controller
+
+![client HTTPverbs request Controller ](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/16.PNG)
+
+- Let's attempt tho remember the below diagram forever
+
+- status codes
+
+![status codes ](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/17.PNG)
+
+## REST
+
+- HTTP requests are handled by the methods of a REST service. In Spring’s approach a REST service is a controller. It is able to respond to HTTP requests
+- Please note, that Http requests are implemented with REST and no-REST.
+
+![http verbs](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/18.PNG)
+
+- Controllers are the link between the web http clients (browsers, mobiles) and your application. They should be lightweight and call other components in your application to perform actual work (DAO for example).
+- These components are easily identified by the **@RestController** annotation.
+- Example of addressable resources
+    - Retrieve a window list : GET /api/windows
+    - Retrieve a particular window : GET /api/windows/{window_id}
+    - Create or update a window : POST /api/windows
+    - Update a window and update its status : PUT /api/windows/{window_id}/switch
+    - Delete a window : DELETE /api/windows/{window_id}
+
+This WindowController handles GET requests for /api/windows by returning a list of WindowDto.
+- A complete example to manage windows
+- We create a package named **controller** first and then put this code based on the document
+
+```
+package com.emse.spring.faircorp.controller;
+
+import com.emse.spring.faircorp.dao.RoomDao;
+import com.emse.spring.faircorp.dao.WindowDao;
+import com.emse.spring.faircorp.dto.WindowDto;
+import com.emse.spring.faircorp.model.Room;
+import com.emse.spring.faircorp.model.Window;
+import com.emse.spring.faircorp.model.WindowStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@RestController // (1)
+@RequestMapping("/api/windows") // (2)
+@Transactional // (3)
+public class WindowController {
+    private final WindowDao windowDao;
+    private final RoomDao roomDao;
+
+    public WindowController(WindowDao windowDao, RoomDao roomDao) { // (4)
+        this.windowDao = windowDao;
+        this.roomDao = roomDao;
+    }
+
+    @GetMapping // (5)
+    public List<WindowDto> findAll() {
+        return windowDao.findAll().stream().map(WindowDto::new).collect(Collectors.toList());  // (6)
+    }
+
+    @GetMapping(path = "/{id}")
+    public WindowDto findById(@PathVariable Long id) {
+        return windowDao.findById(id).map(WindowDto::new).orElse(null); // (7)
+    }
+
+    @PutMapping(path = "/{id}/switch")
+    public WindowDto switchStatus(@PathVariable Long id) {
+        Window window = windowDao.findById(id).orElseThrow(IllegalArgumentException::new);
+        window.setWindowStatus(window.getWindowStatus() == WindowStatus.OPEN ? WindowStatus.CLOSED: WindowStatus.OPEN);
+        return new WindowDto(window);
+    }
+
+    @PostMapping // (8)
+    public WindowDto create(@RequestBody WindowDto dto) {
+        // WindowDto must always contain the window room
+        Room room = roomDao.getOne(dto.getRoomId());
+        Window window = null;
+        // On creation id is not defined
+        if (dto.getId() == null) {
+            window = windowDao.save(new Window(room, dto.getName(), dto.getWindowStatus()));
+        }
+        else {
+            window = windowDao.getOne(dto.getId());  // (9)
+            window.setWindowStatus(dto.getWindowStatus());
+        }
+        return new WindowDto(window);
+    }
+
+    @DeleteMapping(path = "/{id}")
+    public void delete(@PathVariable Long id) {
+        windowDao.deleteById(id);
+    }
+}
+```
+- below are the annotations based on the REST
+
+
+![annotations based on the REST](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/19.PNG)
+
+## Lab : Create your rest services
+
+- A basic example
+- This is the time to create your first REST controller with Spring.
+- Create a new class HelloController in package com.emse.spring.faircorp.api
+```
+package com.emse.spring.faircorp.api;
+
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/hello")
+@Transactional
+public class HelloController {
+    @GetMapping("/{name}")
+    public MessageDto welcome(@PathVariable String name) {
+        return new MessageDto("Hello " + name);
+    }
+
+
+    class MessageDto {
+        String message;
+
+        public MessageDto(String message) {
+            this.message = message;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+    }
+}
+```
+- Test your service
+- Browser for GET requests
+- If your REST service expose an handler for a GET HTTP request, this handler can be tested in a browser.
+- Launch your app and open the URL http://localhost:8080/api/hello/Guillaume in your browser
+- When you type an URL in the adress bar, your browser send a GET HTTP request. You should see a response as this one
+```
+{"message":"Hello Guillaume"}
+```
+- **And yes, we got the output after initialising the FaircorpApplication**
+
+![http://localhost:8080/api/hello/Guillaume](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/20.PNG)
+
+# Swagger for all requests
+- With a browser you are limited to GET requests.
+- If you want to test PUT, POST or DELETE HTTP requests, you need another tool. We will use swagger.
+- The advantage of swagger is that it is very well integrated into the Spring world. Update your build.gradle file and add these dependencies
+- BTW, we could have also used **Postman** based on my knowledge
+```
+implementation 'io.springfox:springfox-boot-starter:3.0.0'
+```
+- after putting in the above in build.gradle, I instigated
+```
+gradlew --continuous bootRun
+```
+- The thing is stuck at 80%, let's see
+- And now you can relaunch your app and open swagger interface http://localhost:8080/swagger-ui/index.html
+
+- the above link takes us to the below
+
+
+![http://localhost:8080/swagger-ui/index.html](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/21.PNG)
+
+- All your endpoints are available. You can click on one of them to test it like the this video, https://www.youtube.com/watch?v=f6FUpLs0H_4
+
+- followed the video and did for **-8** because **8** was giving error. Also, did hit **try out** in the **PUT88
+
+
+![PUT -8 Swagger](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/22.PNG)
+
+- Add WindowController
+- Read the previous examples and create
+    - a DTO WindowDto and the REST service WindowController
+    - a rest service which is able to
+        - Retrieve a window list via a GET
+        - Retrieve a particular window via a GET
+        - Create or update a window via a POST
+        - Update a window and switch its status via a PUT
+        - Delete a window via a DELETE
+
+- Use swagger to test your API
+    - create a new window
+    - list all the window
+    - find the window with id -8
+    - switch its status
+    - deletes this window
+
+![swagger more to come](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/doubt4.PNG)
+
+## CORS
+
+- Today browsers forbid a website to access to resources served by another website defined on a different domain. If you want to call your API on http://localhost:8080 from a webapp you should have this error
+
+- on http://localhost:8080, got below
+
+![http://localhost:8080](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/23.PNG)
+
+- on http://localhost:8080/api/rooms, got below error
+
+![http://localhost:8080/api/rooms](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/24.PNG)
+
+- CORS usage is required because of below
+
+![CORS usage is required](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/25.PNG)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
