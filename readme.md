@@ -982,9 +982,291 @@ public enum HeaterStatus {
     - a list of windows. You have to define a bidirectional association between Room and Window : update the Window entity constructor to always send the room when a room is created, ie add an argument Room in the Window constructor
     - create a constructor with non nullable fields and a default constructor
 
-- exact h2 status
+![Hibernate](https://github.com/anindameister/WebDevelopmentClass/blob/main/snaps/doubt1.PNG)
+
+- exact h2 console status
 
 ![exact h2 status](https://github.com/anindameister/WebDevelopmentClass/blob/main/snaps/9.PNG)
+
+### Populate data
+- We’re going to populate our database and insert data in tables.
+- You can execute the script below in your H2 console, but data will be - deleted on the next app reload. Fortunately Spring Boot offers a mechanism to populate a database at startup.
+- Create a file data.sql in src/main/resources next to application.properties
+- Create a file data.sql in src/main/resources next to application.properties
+- data.sql
+
+![data.sql](https://github.com/anindameister/WebDevelopmentClass/blob/main/snaps/10.PNG)
+
+### Dao creation
+
+- Simple DAO
+- Write now 3 Spring data DAO WindowDao, HeaterDao and RoomDao in package com.emse.spring.faircorp.dao (interface that extends JpaRepository with the good types for entity and its id)
+- You’re going to write your own DAO methods (for specific requests), you have to create custom interfaces and implementations with your custom methods.
+- WindowDao.java
+```
+package com.emse.spring.faircorp.dao;
+
+import com.emse.spring.faircorp.model.Window;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+public interface WindowDao  extends JpaRepository<Window, Long> {
+
+    @Modifying
+    @Query(value = "delete from Rwindow w where w.room.id = :roomId", nativeQuery = true )
+    void deleteRwindowByRoom(@Param("roomId") Long roomId);
+
+}
+```
+
+- RoomDao
+```
+package com.emse.spring.faircorp.dao;
+
+import com.emse.spring.faircorp.model.Room;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface RoomDao extends JpaRepository<Room, Long> {
+}
+```
+- HeaterDao
+```
+package com.emse.spring.faircorp.dao;
+
+import com.emse.spring.faircorp.model.Heater;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+
+public interface HeaterDao  extends JpaRepository<Heater, Long> {
+
+    @Modifying
+    @Query("delete from Heater r where r.room.id = ?1")
+    void deleteHeaterByRoom(Long roomId);
+}
+```
+- To check WindowDao, create a class WindowDaoTest in src/test/java/com.emse.spring.faircorp.dao
+```
+import com.emse.spring.faircorp.model.Window;
+import com.emse.spring.faircorp.model.WindowStatus;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+@ExtendWith(SpringExtension.class)
+@DataJpaTest
+class WindowDaoTest {
+    @Autowired
+    private WindowDao windowDao;
+
+    @Test
+    public void shouldFindAWindow() {
+        Window window = windowDao.getOne(-10L);
+        Assertions.assertThat(window.getName()).isEqualTo("Window 1");
+        Assertions.assertThat(window.getWindowStatus()).isEqualTo(WindowStatus.CLOSED);
+    }
+}
+```
+- in order to check how to do the testing, we can refer to do this video
+https://www.youtube.com/watch?v=a_245NeyCrM
+
+- WindowDaoTest results
+
+![WindowDaoTest results](https://github.com/anindameister/WebDevelopmentClass/blob/main/snaps/11.PNG)
+
+- RoomDaoTest.java
+```
+package com.emse.spring.faircorp.dao;
+import com.emse.spring.faircorp.model.Room;
+import com.emse.spring.faircorp.model.Window;
+import com.emse.spring.faircorp.model.WindowStatus;
+import org.assertj.core.api.Assertions;
+import org.assertj.core.groups.Tuple;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.util.List;
+
+@ExtendWith(SpringExtension.class)
+@DataJpaTest
+public class RoomDaoTest {
+    @Autowired
+    private RoomDao roomDao;
+
+    @Test
+    public void shouldFindOneRoom() {
+        Room room = roomDao.getOne(-10L);
+        Assertions.assertThat(room.getName()).isEqualTo("Room1");
+//        Assertions.assertThat(window.getWindowStatus()).isEqualTo(WindowStatus.CLOSED);
+    }
+
+}
+```
+- rightClick on test/java/faircorp/dao and do "run tests on com.emse..."
+- result 2 test passed, seems that **HeaterDaoTest** doesn't happen
+- now did change to "toto" , in accordance to video and indeed the test fails and hence reverted back
+
+- Execute your test. This test shoyld be green. You can write similar tests to test **RoomDao** and **HeaterDao**
+- putting across the HeaterDaoTest.java code
+```
+package com.emse.spring.faircorp.dao;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.util.List;
+
+@ExtendWith(SpringExtension.class)
+@DataJpaTest
+public class HeaterDaoTest {
+}
+```
+
+### Custom DAO
+- Create your own interface WindowDaoCustom in package com.emse.spring.faircorp.dao
+```
+package com.emse.spring.faircorp.dao;
+
+import com.emse.spring.faircorp.model.Window;
+
+import java.util.List;
+
+public interface WindowDaoCustom {
+    List<Window> findRoomOpenWindows(Long id);
+}
+```
+- Refactor your WindowDao interface : it must extend JpaRepository and WindowDaoCustom
+
+- so the updated code with a simple update, **, WindowDaoCustom**
+```
+package com.emse.spring.faircorp.dao;
+
+import com.emse.spring.faircorp.model.Window;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+public interface WindowDao  extends JpaRepository<Window, Long>, WindowDaoCustom {
+
+    @Modifying
+    @Query(value = "delete from Rwindow w where w.room.id = :roomId", nativeQuery = true )
+    void deleteRwindowByRoom(@Param("roomId") Long roomId);
+
+}
+```
+- Create your own implementation of WindowDaoCustom with your custom methods and inject the EntityManager (JPA)
+
+```
+package com.emse.spring.faircorp.dao;
+
+import com.emse.spring.faircorp.model.Window;
+import com.emse.spring.faircorp.model.WindowStatus;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.List;
+
+public class WindowDaoCustomImpl implements WindowDaoCustom{
+    @PersistenceContext
+    private EntityManager em;
+    @Override
+    public List<Window> findRoomOpenWindows(Long id) {
+        String jpql = "select w from Window w where w.room.id = :id and w.windowStatus= :status";
+        return em.createQuery(jpql, Window.class)
+                .setParameter("id", id)
+                .setParameter("status", WindowStatus.OPEN)
+                .getResultList();
+    }
+}
+```
+- You have to test your DAO. When Spring context is loaded, the database is populated with the file data.sql and we can test these values. For that update WindowDaoTest test and add these methods
+
+- the WindowDaoTest to be updated by including the below code
+```
+@Test
+    public void shouldFindRoomOpenWindows() {
+        List<Window> result = windowDao.findRoomOpenWindows(-9L);
+        Assertions.assertThat(result)
+                .hasSize(1)
+                .extracting("id", "windowStatus")
+                .containsExactly(Tuple.tuple(-8L, WindowStatus.OPEN));
+    }
+
+    @Test
+    public void shouldNotFindRoomOpenWindows() {
+        List<Window> result = windowDao.findRoomOpenWindows(-10L);
+        Assertions.assertThat(result).isEmpty();
+    }
+```
+- the updated code for WindowDaoTest
+```
+package com.emse.spring.faircorp.dao;
+
+
+import com.emse.spring.faircorp.dao.WindowDao;
+import com.emse.spring.faircorp.model.Window;
+import com.emse.spring.faircorp.model.WindowStatus;
+import org.assertj.core.api.Assertions;
+import org.assertj.core.groups.Tuple;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.util.List;
+
+@ExtendWith(SpringExtension.class)
+@DataJpaTest
+class WindowDaoTest {
+    @Autowired
+    private WindowDao windowDao;
+
+    @Test
+    public void shouldFindAWindow() {
+        Window window = windowDao.getOne(-10L);
+        Assertions.assertThat(window.getName()).isEqualTo("Window 1");
+        Assertions.assertThat(window.getWindowStatus()).isEqualTo(WindowStatus.CLOSED);
+    }
+
+    @Test
+    public void shouldFindRoomOpenWindows() {
+        List<Window> result = windowDao.findRoomOpenWindows(-9L);
+        Assertions.assertThat(result)
+                .hasSize(1)
+                .extracting("id", "windowStatus")
+                .containsExactly(Tuple.tuple(-8L, WindowStatus.OPEN));
+    }
+
+    @Test
+    public void shouldNotFindRoomOpenWindows() {
+        List<Window> result = windowDao.findRoomOpenWindows(-10L);
+        Assertions.assertThat(result).isEmpty();
+    }
+
+}
+```
+- last part
+
+![last part](https://github.com/anindameister/WebDevelopmentClass/blob/main/snaps/doubt2.PNG)
+
+
+
+
+
+
+
+
+
 
 
 
