@@ -982,11 +982,13 @@ public enum HeaterStatus {
     - a list of windows. You have to define a bidirectional association between Room and Window : update the Window entity constructor to always send the room when a room is created, ie add an argument Room in the Window constructor
     - create a constructor with non nullable fields and a default constructor
 
-![Hibernate](https://github.com/anindameister/WebDevelopmentClass/blob/main/snaps/doubt1.PNG)
+<!-- ![Hibernate](https://github.com/anindameister/WebDevelopmentClass/blob/main/snaps/doubt1.PNG) -->
+![Hibernate](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/doubt1.PNG)
 
 - exact h2 console status
 
-![exact h2 status](https://github.com/anindameister/WebDevelopmentClass/blob/main/snaps/9.PNG)
+<!-- ![exact h2 status](https://github.com/anindameister/WebDevelopmentClass/blob/main/snaps/9.PNG) -->
+![exact h2 status](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/9.PNG)
 
 ### Populate data
 - We’re going to populate our database and insert data in tables.
@@ -995,7 +997,8 @@ public enum HeaterStatus {
 - Create a file data.sql in src/main/resources next to application.properties
 - data.sql
 
-![data.sql](https://github.com/anindameister/WebDevelopmentClass/blob/main/snaps/10.PNG)
+<!-- ![data.sql](https://github.com/anindameister/WebDevelopmentClass/blob/main/snaps/10.PNG) -->
+![data.sql](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/10.PNG)
 
 ### Dao creation
 
@@ -1077,7 +1080,8 @@ https://www.youtube.com/watch?v=a_245NeyCrM
 
 - WindowDaoTest results
 
-![WindowDaoTest results](https://github.com/anindameister/WebDevelopmentClass/blob/main/snaps/11.PNG)
+<!-- ![WindowDaoTest results](https://github.com/anindameister/WebDevelopmentClass/blob/main/snaps/11.PNG) -->
+![WindowDaoTest results](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/11.PNG)
 
 - RoomDaoTest.java
 ```
@@ -1257,8 +1261,8 @@ class WindowDaoTest {
 ```
 - last part
 
-![last part](https://github.com/anindameister/WebDevelopmentClass/blob/main/snaps/doubt2.PNG)
-
+<!-- ![lastpart ](https://github.com/anindameister/WebDevelopmentClass/blob/main/snaps/doubt2.PNG) -->
+![lastpart](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/doubt2.PNG)
 
 
 
