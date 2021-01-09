@@ -1699,6 +1699,157 @@ public class RoomController {
 }
 
 ```
+- Right now, I have github error, hahahahahaha
+
+![github error](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/26.PNG)
+
+## Write unit tests in Java 
+- In this course you will learn how to write a unit test, how to simulate the collaborator behaviors and how to check the results
+
+### Software testing
+- checks if the actual results match the expected results
+- but also
+    - helps to identify errors by testing limits
+    - helps to not reproduce errors
+    - When a bug occurs, we create a new test case, we fix the bug.. And after each code update, we execute this tests to know if the bug won’t occur anymore
+
+- You can test your software manually
+    - but you have to do that before each feature update
+    - and more your application is rich more you need to do more tests
+
+- The solution is to have automatic tests and code them
+
+#### You have different types of tests
+
+- Installation testing: A software is often a set of little apps (web app, spring boot app, datasource…​.). This kind of test helps to check if your installation procedure is correct and if the software can be used
+
+- Security testing: Checks the security and if your data is confidential and not available from hackers
+
+- Performance testing: to determine how a system or sub-system performs in terms of responsiveness and stability under a particular workload
+
+- End to end testing: You test your app as a user. These tests are sometimes called functional tests
+
+- Unit testing: We test every units of source code (each class, each methods…​).
+
+- Manual tests are cheaper on short-term but more expensive on long-term.Automated tests are expensive on short-term but cheaper on long-term.A human will tire when he has to execute the same tests continuously. He will be less conscience and less attentive. It’s not the case for a test program
+- If you want to facilitate your tests you can apply 2 rules
+    - use interface to define the contract to code
+    - use dependency injection. This mechanism helps to use for example
+        - a mock object, to simulate the object behavior in a test and
+        - the real implementation in production code
+
+#### Unit tests
+- A unit test is a method that instantiates a small portion of your application (one method for example) and checks its behavior independently from other parts.
+
+- Portion to test, can be viewed as an independent system. We talk about System Under Test (SUT)
+
+- For example, if we want to test a service which follows this contract
+
+![tests](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/basicJavaProblem1.PNG)
+
+- When you write a test you have to test all the cases. In our example you have to check when the user is nulland when a user is defined and has a birth year
+
+- In an application this system SUT will interact with other components
+- These other components are called collaborators.
+- For example if we change our service
+
+![tests](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/basicJavaProblem2.PNG)
+
+- FriendRepository and IntegerComputer are collaborators
+- When you want to write a test of your SUT, you need to simulate the collaborator behaviors.
+- To simulate collabators, you have several possibilities
+    - Use a fake object: You create an object only for your test (it’s not a good solution)
+    - Use a spy object: You create a spy from the the real implementation of one collaborator. You use a library for that and you can overrided the returned values
+    - Use a mock object: A mock is created via a library from a specified contract (an interface). And you can pre preprogrammed these objects to return your wanted values during the test
+
+- Black box
+- When you want to write a test you have to consider this SUT (system under test) as a black box.
+- The code to test is not important, it’s the black box…​ you have to focus on inputs and outputs
+- Your black box can have inputs (method parameters for example)
+In your test you will invoke the SUT and you test this one by sending inputs
+- Your black box can return a result or update the system state (we have an output)
+- In your test you will check the result and assert if this result is equals to the expected behavior
+- When you write you can follow the AAA pattern : arrange /act /assert
+- Another pattern is Given / When / Then
+- We use Junit to write tests in Java
+
+![tests](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/basicJavaProblem3.PNG)
+
+
+![tests](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/basicJavaProblem4.PNG)
+
+
+![tests](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/basicJavaProblem5.PNG)
+
+## Lab 5 : Unit tests
+- You need to clone a new project in your workspace. Use a terminal and launch
+```
+git clone https://github.com/Dev-Mind/unitTestInAction.git
+
+```
+- This project is a Gradle project. You can Open it in IntelliJ and configure it
+- Go on FriendServiceImpl and generate a test class with 
+
+```
+Ctrl + Shift + T
+```
+![lab tests](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/26.PNG)
+
+- Write the test of the method computeFriendAge
+```
+package com.devmind.testinaction.service;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class FriendServiceImplTest {
+    void computeFriendAge(){
+
+    }
+
+
+}
+```
+- Declare a property of type FriendRepository
+```
+package com.devmind.testinaction.service;
+
+import com.devmind.testinaction.repository.FriendRepository;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class FriendServiceImplTest {
+
+    private FriendRepository friendRepostiory;
+
+    void computeFriendAge(){
+
+    }
+    
+}
+```
+- In @Before block create this property implementation. This block will be executed before each test. So a a new implementation will be created after each tests.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
