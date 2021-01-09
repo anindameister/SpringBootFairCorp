@@ -1829,6 +1829,7 @@ class FriendServiceImplTest {
 ```
 - In @Before block create this property implementation. This block will be executed before each test. So a a new implementation will be created after each tests.
 
+![testing](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/testingRest.PNG)
 
 
 
