@@ -1831,6 +1831,29 @@ class FriendServiceImplTest {
 
 ![testing](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/testingRest.PNG)
 
+## Deploy your webapp on Clever Cloud 
+- Clever cloud is a platform designed by developers for developers.
+- You Write Code. They Run It.
+- When you write code, you push sources on Github. Clever Cloud is able to install your Github app
+- Sign in on https://github.com/ with your account. If you haven’t an account you have to create one
+- When you are connected, you can create a new account on https://www.clever-cloud.com/en/
+- The task of excepting the invitation from devMind and connecting my github account to clever clud has been done.
+- Before this deployment you have to create a folder called "clevercloud" in your Spring Boot project
+- did the above
+
+![clevercloud folder creation](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/28.PNG)
+
+- Inside, add a file gradle.json. This file will contain
+
+
+![clevercloud json](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/29.PNG)
+
+- To know the name of your jar go on folder **./build/libs/.**
+- found that part
+- Push your last changes on your Github repository. For the moment, Clevercloud used only Github
+
+
+
 
 
 
