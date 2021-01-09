@@ -1855,6 +1855,27 @@ class FriendServiceImplTest {
 
 ![github error](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/26.PNG)
 
+- got the above fixed
+- attempted to deploy but failed
+
+![deployment error in clevercloud error](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/30.PNG)
+
+- realised that it's an error because am using windows
+- followed the below steps in gitbash and fixed the error
+```
+git ls-files --stage
+git update-index --chmod=+x gradlew
+git ls-files --stage
+git commit -m "made a file executable"
+git push
+```
+-  <a href="https://medium.com/@akash1233/change-file-permissions-when-working-with-git-repos-on-windows-ea22e34d5cee">found a beautiful document on the way</a>
+- the above document gives some knowledge about windows as compared to linux
+- after deployment was done, did go to the page to see the app and it was there. Need to check out the REST part later.
+
+
+
+
 # Kotlin for a Java developer (EN)
 
 - In few words Kotlin is
