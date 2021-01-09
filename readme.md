@@ -1793,7 +1793,7 @@ git clone https://github.com/Dev-Mind/unitTestInAction.git
 ```
 Ctrl + Shift + T
 ```
-![lab tests](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/26.PNG)
+![lab tests](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/27.PNG)
 
 - Write the test of the method computeFriendAge
 ```
