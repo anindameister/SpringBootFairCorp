@@ -22,7 +22,9 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="57a63abf-cd8c-4c90-a074-765a09dd617d" name="Default Changelist" comment="" />
+    <list default="true" id="57a63abf-cd8c-4c90-a074-765a09dd617d" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -64,6 +66,7 @@
       <option name="presentableId" value="Default" />
       <updated>1610180726522</updated>
       <workItem from="1610180728238" duration="145000" />
+      <workItem from="1610184560691" duration="297000" />
     </task>
     <servers />
   </component>
@@ -80,5 +83,6 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>
