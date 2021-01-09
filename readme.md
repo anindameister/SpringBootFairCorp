@@ -1851,6 +1851,175 @@ class FriendServiceImplTest {
 - To know the name of your jar go on folder **./build/libs/.**
 - found that part
 - Push your last changes on your Github repository. For the moment, Clevercloud used only Github
+- got the githubBehaviourMessage again
+
+![github error](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/26.PNG)
+
+# Kotlin for a Java developer (EN)
+
+- In few words Kotlin is
+    - Concise Drastically reduce the amount of boilerplate code
+    - Interoperable Leverage existing libraries for the JVM, Android, and the browser. You can call Kotlin code in Java or Java code in Kotlin
+    - Safe Kotlin tries to help you reduce errors such as null pointer exceptions.
+- Executable class
+    - An executable Java class is a class which, when handed over to the JVM, starts its execution at a particular point in the class, the main method.
+
+- For example
+```
+package yeahKotlin;
+
+public class HelloWorldApplication {
+    public static void main(String[] args) {
+        String name = "Guillaume";
+        System.out.println("Hello EMSE I am " + name);
+    }
+}
+```
+- In IntelliJ you can use the contextual menu (right click) to run this class and see the result in console
+```
+Hello EMSE I am Guillaume
+
+```
+- With Kotlin you can write to produce the same result
+```
+package yeahKotlin
+
+fun main(args: Array<String>) {
+    val name = "Guillaume"
+    println("Hello EMSE I am $name")
+}
+```
+- You can write functions not attached to a class (the compiler will do it for you)
+- The public visibility is the default in Kotlin and therefore no need to define it each time
+- Semicolons are no longer necessary
+- Kotlin does a lot of type inference (the compiler tries to guess which type you are using) and you don’t need to define the type if the compiler can infer it (example of the name or you don’t need to specify the type String)
+- You can use String templates and directly access the content of a variable with $
+- If you want to test Kotlin code in your browser you can use https://play.kotlinlang.org
+
+#### Types
+Kotlin use <a href="https://kotlinlang.org/docs/reference/basic-types.html">basic types</a>. The most used are
+- Integer numbers : Int (Integer in Java), Long
+- Floating-point number : Double, Float
+- String
+- Boolean
+- Arrays
+- Collections : List, Set, Map…​
+
+#### Immutability
+- Kotlin forces you to use immutability when you develop. An immutable object is an object whose state cannot be modified after it is created. It allows you to write safer and cleaner code.
+- When you want to declare a variable you can use the keyword val. We did that in our first example
+```
+val name = "Guillaume"
+```
+- When the value is defined you can’t update it. With the code below, the compiler will fail with an Error "Val cannot be reassigned".
+```
+name = "Someone else"
+
+```
+- If you need to reassign the value you can use keyword var
+```
+
+var name = "Guillaume"
+name = "Someone else"
+```
+- Collections (List, Set, Map…​) are also immutable in Kotlin. The code below will fail because type List is immutable and method add does not exist
+```
+val rooms: List<Room> = listOf()
+rooms.add(Room(1, "Room1"))
+```
+- When you want a mutable collection you have dedicated types
+```
+val rooms: MutableList<Room> = mutableListOf()
+rooms.add(Room(1, "Room1"))
+```
+- Nullability
+- One of the most common pitfalls in many programming languages, including Java, is that accessing a member of a null reference will result in a null reference exception. Kotlin’s type system is aimed at eliminating the danger of null references from code.
+
+```
+var a: String = "abc" // Regular initialization means non-null by default
+a = null // compilation error
+
+```
+- In Kotlin, the type system distinguishes between references that can hold null (nullable references) and those that can not (non-null references). To allow nulls, we can declare a variable as nullable string, written String?:
+
+```
+var b: String? = "abc" // can be set null
+b = null // ok
+```
+- When you want declare a nullable value add ? to the type
+- For more details read this <a href="https://kotlinlang.org/docs/reference/null-safety.html">article</a>
+
+- Functions
+- Function declarations
+- A function is define with the keyword fun. In Kotlin. Arguments args, returned type are always after For example
+```
+fun double(x: Int): Int {
+    return 2 * x
+}
+```
+- You can call this function
+```
+val result = double(2)
+
+```
+- Default arguments
+- You can use default argument in Kotlin. For example:
+```
+fun double(x: Int = 4): Int {
+    return 2 * x
+}
+
+double(2) // returns 4
+double() // returns 8 (the default value is applied)
+```
+- Named arguments
+- When calling a function, you can name one or more of its arguments. This may be helpful when a function has a large number of arguments
+
+```
+fun foo(bar: Int = 0, baz: Int) : Int { /*...*/ }
+val result = foo(baz = 4)
+```
+### Classes
+- Definition
+    - Classes in Kotlin are declared using the keyword class. A class in Kotlin can have a primary constructor and one or more secondary constructors. The primary constructor is part of the class header: it goes after the class name (and optional type parameters).
+```
+class Person constructor(firstName: String) { /*...*/ }
+
+```
+- If the primary constructor does not have any annotations or visibility modifiers, the constructor keyword can be omitted:
+```
+class Person(firstName: String) { /*...*/ }
+
+```
+### Inheritance
+- By default, Kotlin classes are final: they can’t be inherited. To make a class inheritable, mark it with the open keyword.
+```
+open class Base(p: Int)
+class Derived(p: Int) : Base(p)
+
+```
+- For more detail read this <a href="https://kotlinlang.org/docs/reference/classes.html#inheritance">article</a>.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
