@@ -2161,6 +2161,382 @@ fun main(){
 ```
 4
 ```
+# https://dev-mind.fr/training/android/android-first-app.html
+
+- chose Empty Activity and followed the instructions in the above url
+- Moving on
+- Manifest file
+```
+File : app > manifests > AndroidManifest.xml
+```
+- Manifest file is a kind of id card for your project. 
+- The manifest file describes essential information about your app to the Android build tools, the Android operating system, and Google Play.
+- All activities must be defined inside and one of them will be defined as entry point for your app (with an intent filter).
+```
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.faircorp">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
+```
+- Activity
+- You can see 3 packages named **com.faircorp** in Android view.
+    - The first one (not suffixed) contains all your Kotlin files used to write your app and our first activity
+    - The second (suffixed with androidTest) contains test files executed to test your app on a device or on an emulator.
+    - The last one (suffixed with test) contains unit test files used to control your code locally at each build
+- Unfortunately we don’t have enough time to see how to write these tests. But be aware that if you want to create a sustainable application, testing is the best way to limit regressions and make it easier to manage your application over time.
+```
+File : app > java > com.faircorp > MainActivity
+```
+- This is the main activity. It’s the entry point for your app. When you build and run your app, the system launches an instance of this Activity and loads its layout.
+- Each activity (as each components in Android) has a lifecyle and you can interact at each step
+- For example in MainActivity, we declare the XML resource file where your view content is defined (R.layout.activity_main)
+- R.layout.activity_main
+```
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello World!"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</android.support.constraint.ConstraintLayout>
+```
+- MainActivity.kt
+```
+package com.faircorp
+
+import android.support.v7.app.AppCompatActivity
+import android.os.Bundle
+
+class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+    }
+}
+```
+- NOTE : directory is named java to assure compatibility with old projects or libs written in Java but don’t be afraid we will use Kotlin :-)
+
+![flowchart](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/32.PNG)
+
+### Resource files
+- Resources are the additional files and static content that your code uses, such as images, screen definitions, strings used in interfaces, styles, animation instructions, and more.
+
+![Resource files](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/33.PNG)
+
+- You can provide alternative resources for specific device configurations, by grouping them in specially-named resource directories. 
+- **At runtime, Android uses the appropriate resource based on the current configuration.**
+- **For example, you might want to provide a different UI layout depending on the screen size or different strings depending on user language.**
+```
+File : app > res > layout > activity_main.xml
+```
+- Here we use a constraint layout. It contains a TextView element with the text "Hello Aninda, Life is Beautiful!"
+
+```
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello Aninda, Life is Beautiful!"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</android.support.constraint.ConstraintLayout>
+```
+- We will see later how to update or create a new layout and include inside widgets
+
+### Gradle file
+- File : Gradle Scripts > build.gradle
+- There are two files with this name:
+    - one for the project, Project: Faircorp, and
+    - one for the app module, Module: app.
+
+- Each module has its own build.gradle file, but this project currently has just one module.
+- If you need to use external libraries you will add them in build.gradle (Project: Faircorp) 
+- If you want to configure android plugin (APi version, SDK version) you will update build.gradle (Module: app)
+
+- Project: Faircorp
+```
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+    ext.kotlin_version = "1.4.20"
+    repositories {
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:4.0.0"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+```
+- Module: app
+```
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.1"
+
+    defaultConfig {
+        applicationId "com.faircorp"
+        minSdkVersion 26
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:2.0.4'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+}
+```
+## Launch your application
+- In this part you will be able to launch your application on you phone or tablet. If you don’t have a device on Android operating system, you can use the emulator embedded in Android Studio.
+- Configure a real Android device
+- You need to set up your phone
+    - Connect your device to your development machine with a USB cable. If you developed on Windows, you might need to install USB driver for your device.
+        - done
+    - You need to update your device to activate "Developer options"
+        - done
+    - Make sure to run **usb debugging** and another thing, for sure, while inserting usb into android phone, **choose access files and NOT charging only**
+- Now you are ready to run your app
+    - and it works perfectly on my phone
+
+## Analyse errors
+- To analyze errors you can open the run console on the bottom. This window contains messages send when app is launched with Gradle
+- You also can open Logcat view to see logs send by your device or the emulated device
+
+# https://dev-mind.fr/training/android/android-update-ui.html
+- Update UI and refactor welcome layout 
+- In this lesson, you will learn how to update a layout with Android Studio
+#### User interface
+- User interface for an Android app is built as a hierarchy of layouts and widgets.
+    - The layouts are ViewGroup objects, containers that control how their child views are positioned on the screen.
+    - Widgets are View objects, UI components such as buttons and text boxes.
+
+
+![UI](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/34.PNG)
+
+- In this new codelab you will update the hello world page to create a home page with a welcome message, an image, an edit text and a button.
+
+![UI](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/35.PNG)
+
+- Android provides an XML vocabulary for ViewGroup and View classes, and your UI is defined in XML files. Don’t be afraid Android Studio provide a wysiwyg editor.
+### Android Studio Layout Editor
+- In the Project window, open app > res > layout > activity_main.xml. Editor should be displayed
+
+![activity_main.xml](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/36.PNG)
+
+1. View mode: View your layout in either code mode (XML editor), Design mode (design view and Blueprint view), or Split mode icon (mix between code and design view)
+2. Palette: Contains various views and view groups that you can drag into your layout.
+
+![Palette](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/37.PNG)
+
+3. Design editor: Edit your layout in Design view, Blueprint view, or both.
+
+4. Component Tree: Shows the hierarchy of components in your layout. It is sometimes useful to select a given widget
+
+![Complete](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/38.PNG)
+
+5. Constraint widget : Helps to place an item in relation to those around it
+
+6. Attributes: Controls for the selected widget’s attributes.
+
+7. Layout Toolbar: Click these buttons to configure your layout appearance in the editor and change layout attributes as target phone, orientation, light, locale…​
+
+8. Widget Toolbar: Click these buttons to align your view. Button with red cross is useful to clear all widget constraints
+
+## Update home page
+- For the moment our page contains only one readonly text field.
+    - Select it and delete it with **Suppr key**
+        - commented out the code
+    - We will add an image. Copy this xml file <a href="https://dev-mind.fr/ic_logo.xml">ic_logo.xml </a>in your directory _res > drawable. This file is a vector drawable image. **Directory drawable contains all your images. Several formats are available (png, jpg…​) but the most optimized is a <a href="https://developer.android.com/guide/topics/graphics/vector-drawable-resources">Vector drawable</a>**
+        - done that
+    - In Common Palette on the left of the screen click on ImageView and drag into your layout. A window is opened to select an image. You will choose the imported image ic_logo.xml
+        - done
+    - Click on OK button to import image in your layout
+    - We will use the blueprint view to add constraint to this image, to place it on the top of the screen and define a height. See <a href="https://www.youtube.com/watch?v=1ogCfYm9_DA">video</a>  for more detail
+    - We will add a new read-only text below image to introduce our app. In common palette select a Textview widget and drag into your layout.
+    - In blueprint view you can add constraints to this textview
+        - text : Welcome on faircorp\n the app to manage building windows
+        - layout_width and layout_height : wrap_content
+        - textSize: 18 sp
+        - gravity : center
+        - margin right and left 16dp, margin top 32dp
+        - follow <a href="">video</a> to check out textAlign=Center.. 
+        - Note: you can do anything and everything with the design. Just to note that designing needs a preBluePrintSettingInMindOrPaper
+
+![UI contd..](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/39.PNG)
+- check the <a href=:"https://www.youtube.com/watch?v=l4CyARSHtDQ">video</a> to remove confusion   
+
+### Layout errors and strings
+
+![Layout errors and strings](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/40.PNG)
+
+- Please watch the <a href="https://www.youtube.com/watch?v=a_bwuQvKRTU&feature=emb_logo">video </a> in order to understand what exactly is being asked.
+
+### Launch action on button click
+
+- An activity is always associated with a layout file. In Lab 2 we have updated our main activity layout with a logo, a welcome message and a button. In this lesson, you add some code in MainActivity to interact with this button.
+
+1. In the file app > java > com.faircorp > MainActivity, add the following openWindow() method stub:
+
+```
+package com.faircorp
+
+import android.content.Intent
+import android.support.v7.app.AppCompatActivity
+import android.os.Bundle
+import android.view.View
+import android.widget.EditText
+import android.widget.Toast
+
+
+
+
+class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+    }
+
+    /** Called when the user taps the button */
+    fun openWindow(view: View) {
+        // Extract value filled in editext identified with txt_window_name id
+        val windowName = findViewById<EditText>(R.id.txt_window_name).text.toString()
+        // Display a message
+        Toast.makeText(this, "You choose $windowName", Toast.LENGTH_LONG).show()
+
+    }
+}
+```
+2. Return to the activity_main.xml file and select the button in the Layout Editor. In Attributes window, locate onClick property and select **openWindow** from its drop-down list, because that's the function we are using
+3. You can now relaunch your app,
+    - In window name editext fill a name
+    - Click on the button you a message should be displayed on the bottom of the screen with the ligt name filled
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
