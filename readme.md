@@ -1910,6 +1910,13 @@ fun main(args: Array<String>) {
     println("Hello EMSE I am $name")
 }
 ```
+-Simplest version
+```
+fun main() {
+    val name = "Guillaume"
+    println("Hello EMSE I am $name")
+}
+```
 - You can write functions not attached to a class (the compiler will do it for you)
 - The public visibility is the default in Kotlin and therefore no need to define it each time
 - Semicolons are no longer necessary
@@ -1944,15 +1951,68 @@ var name = "Guillaume"
 name = "Someone else"
 ```
 - Collections (List, Set, Map…​) are also immutable in Kotlin. The code below will fail because type List is immutable and method add does not exist
+- Let's try to understand from a different example
+```
+fun main(){  
+    var list = listOf("Ajay","Vijay","Prakash")//read only, fix-size  
+    for(element in list){  
+        println(element)  
+    } 
+}
+```
+- output
+```
+Ajay
+Vijay
+Prakash
+```
 ```
 val rooms: List<Room> = listOf()
 rooms.add(Room(1, "Room1"))
+```
+- Am not really able to comprehend the above example
+```
+fun main(){  
+    var rooms = listOf("Room-A","Room-B","Room-C")//read only, fix-size  
+    rooms.add("Room1") 
+}
+```
+- output
+```
+Unresolved reference: add
 ```
 - When you want a mutable collection you have dedicated types
 ```
 val rooms: MutableList<Room> = mutableListOf()
 rooms.add(Room(1, "Room1"))
 ```
+- my example1
+```
+fun main(){  
+    var rooms = mutableListOf("Room-A","Room-B","Room-C")//read only, fix-size  
+    rooms.add("Room1")
+    print(rooms)
+}
+```
+- output
+```
+[Room-A, Room-B, Room-C, Room1]
+```
+- my example 2
+```
+fun main(){  
+    var rooms = mutableListOf("Room-A","Room-B","Room-C")//read only, fix-size  
+    rooms.add(1,"Room1")
+    print(rooms)
+}
+```
+- output
+```
+[Room-A, Room1, Room-B, Room-C]
+```
+
+
+
 - Nullability
 - One of the most common pitfalls in many programming languages, including Java, is that accessing a member of a null reference will result in a null reference exception. Kotlin’s type system is aimed at eliminating the danger of null references from code.
 
@@ -1961,11 +2021,33 @@ var a: String = "abc" // Regular initialization means non-null by default
 a = null // compilation error
 
 ```
+- example
+```
+fun main(){  
+    var b: String = "abc" 
+	b = null 
+    print(b)
+}
+```
+- the above gives big sized error
+
 - In Kotlin, the type system distinguishes between references that can hold null (nullable references) and those that can not (non-null references). To allow nulls, we can declare a variable as nullable string, written String?:
 
 ```
 var b: String? = "abc" // can be set null
 b = null // ok
+```
+- example
+```
+fun main(){  
+    var b: String? = "abc" // can be set null
+	b = null // ok
+    print(b)
+}
+```
+- output
+```
+null
 ```
 - When you want declare a nullable value add ? to the type
 - For more details read this <a href="https://kotlinlang.org/docs/reference/null-safety.html">article</a>
@@ -1983,6 +2065,21 @@ fun double(x: Int): Int {
 val result = double(2)
 
 ```
+- above example has been executed and it was asking for a main method within that kotlinPlayGround
+```
+fun main(){  
+    fun double(x:Int):Int{
+    return 2 * x
+}
+    val result = double(2)
+    print(result)
+}
+```
+- output
+```
+4
+```
+
 - Default arguments
 - You can use default argument in Kotlin. For example:
 ```
@@ -1993,6 +2090,39 @@ fun double(x: Int = 4): Int {
 double(2) // returns 4
 double() // returns 8 (the default value is applied)
 ```
+- let's look at this funny example
+```
+fun main(){  
+    fun double(x:Int=4):Int{
+    return 2 * x
+}
+    val result1 = double(2)
+    val result2 =double()
+    
+    print(result1)
+    
+    print(result2)
+}
+
+```
+- output
+```
+48
+```
+- introucing the below 
+```
+ print("****")
+```
+- output
+```
+4****8
+```
+- fixed by using 
+```
+println(double(2));
+    println(double());
+```
+
 - Named arguments
 - When calling a function, you can name one or more of its arguments. This may be helpful when a function has a large number of arguments
 
@@ -2000,29 +2130,37 @@ double() // returns 8 (the default value is applied)
 fun foo(bar: Int = 0, baz: Int) : Int { /*...*/ }
 val result = foo(baz = 4)
 ```
-### Classes
-- Definition
-    - Classes in Kotlin are declared using the keyword class. A class in Kotlin can have a primary constructor and one or more secondary constructors. The primary constructor is part of the class header: it goes after the class name (and optional type parameters).
+- we'll be going step by step
 ```
-class Person constructor(firstName: String) { /*...*/ }
-
+fun main(){  
+    fun foo(bar: Int, baz: Int) : Int 
+    { val bay:Int;
+        bay=bar+baz
+    return bay}
+    print(foo(2,4))
+	
+}
 ```
-- If the primary constructor does not have any annotations or visibility modifiers, the constructor keyword can be omitted:
+- output
 ```
-class Person(firstName: String) { /*...*/ }
-
+6
 ```
-### Inheritance
-- By default, Kotlin classes are final: they can’t be inherited. To make a class inheritable, mark it with the open keyword.
+- check this out
 ```
-open class Base(p: Int)
-class Derived(p: Int) : Base(p)
-
+fun main(){  
+    fun foo(bar: Int= 0, baz: Int) : Int 
+    { val bay:Int;
+        bay=bar+baz
+    return bay}
+    print(foo(baz = 4))
+	
+}
+   
 ```
-- For more detail read this <a href="https://kotlinlang.org/docs/reference/classes.html#inheritance">article</a>.
-
-
-
+- output
+```
+4
+```
 
 
 
