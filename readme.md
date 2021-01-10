@@ -2502,6 +2502,144 @@ class MainActivity : AppCompatActivity() {
     <color name="colorAccent">#e57b1e</color>
 </resources>
 ```
+# https://dev-mind.fr/training/android/android-add-activity.html
+
+## Add an activity
+
+![Add an activity](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/42.PNG)
+
+- This part seems incomplete without the <a href="https://www.youtube.com/watch?v=ppyIYuRpNWk">video</a>
+
+## Build an intent to open an activity
+
+![Build an intent to open an activity](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/43.PNG)
+
+![Build an intent to open an activity](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/44.PNG)
+
+```
+package com.faircorp
+
+import android.content.Intent
+import android.support.v7.app.AppCompatActivity
+import android.os.Bundle
+import android.view.View
+import android.widget.EditText
+import android.widget.Toast
+
+
+const val WINDOW_NAME_PARAM = "com.faircorp.windowname.attribute"
+
+
+class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+    }
+
+//    /** Called when the user taps the button */
+//    fun openWindow(view: View) {
+//        // Extract value filled in editext identified with txt_window_name id
+//        val windowName = findViewById<EditText>(R.id.txt_window_name).text.toString()
+//        // Display a message
+//        Toast.makeText(this, "You choose $windowName", Toast.LENGTH_LONG).show()
+//
+//    }
+
+    /** Called when the user taps the button */
+    fun openWindow(view: View) {
+        val windowName = findViewById<EditText>(R.id.txt_window_name).text.toString()
+
+        // Do something in response to button
+        val intent = Intent(this, WindowActivity::class.java).apply {
+            putExtra(WINDOW_NAME_PARAM, windowName)
+        }
+        startActivity(intent)
+    }
+}
+```
+![Build an intent to open an activity](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/45.PNG)
+
+```
+package com.faircorp
+
+import android.support.v7.app.AppCompatActivity
+import android.os.Bundle
+import android.widget.TextView
+
+class WindowActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_window)
+
+        val param = intent.getStringExtra(WINDOW_NAME_PARAM)
+        val windowName = findViewById<TextView>(R.id.txt_window_name)
+        windowName.text = param
+    }
+}
+```
+![Build an intent to open an activity](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/46.PNG)
+
+- It worked in my phone. Am not using the emulator though my laptop has 8 gb ram because the laptop becomes really slow.
+
+## Manage back button to return on main activity
+
+- When you are on WindowActivity we want to add a button to go back on MainActivity. To do that you need to update WindowActivity and add a line to activate option in action bar 
+```
+supportActionBar?.setDisplayHomeAsUpEnabled(true)
+```
+- WindowActivity.kt
+
+```
+package com.faircorp
+
+import android.support.v7.app.AppCompatActivity
+import android.os.Bundle
+import android.widget.TextView
+
+class WindowActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_window)
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        val param = intent.getStringExtra(WINDOW_NAME_PARAM)
+        val windowName = findViewById<TextView>(R.id.txt_window_name)
+        windowName.text = param
+    }
+}
+```
+- You also need to define your activity parent. This definition is made in AndroidManifest.xml with property parentActivityName
+
+```
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.faircorp">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+<!--        <activity android:name=".WindowActivity"></activity>-->
+        <activity android:name=".WindowActivity" android:parentActivityName=".MainActivity"></activity>
+
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
+```
+![Manage back button to return on main activity](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/47.PNG)
+
+
 
 
 
