@@ -2860,16 +2860,344 @@ open class BasicActivity : AppCompatActivity() {
 
 ![Create a menu in app bar](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/53.PNG)
 
+# https://dev-mind.fr/training/android/android-add-activity-list.html
+## Add a list activity in your app 
+
+- In this lesson, you will learn how to create a new View in your app to list data.
+- Modelisation
+
+![Modelisation](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/54.PNG)
+
+```
+package com.faircorp.model
+
+data class RoomDto(val id: Long,
+                   val name: String,
+                   val currentTemperature: Double?,
+                   val targetTemperature: Double?)
+
+```
+- Note: when a value is nullable you need to suffix type with ?. In our example currentTemperature can be null, so type is Double? and not Double
+4. Redo same steps to create WindowDto
+
+```
+package com.faircorp.model
+
+enum class Status { OPEN, CLOSED}
+
+data class WindowDto(val id: Long, val name: String, val room: RoomDto, val status: Status)
+```
+5. We will now create a service class to manage these windows. We will write 2 methods : one to find all building windows and a second to load only one window by its id. For the moment we will use fake data. In a next lesson we will learn how call a remote service to load real data.
+
+```
+package com.faircorp.model
+
+class WindowService {
+    companion object {
+        // Fake rooms
+        val ROOMS: List<RoomDto> = listOf(
+            RoomDto(1, "Room EF 6.10", 18.2, 20.0),
+            RoomDto(2, "Hall", 18.2, 18.0),
+            RoomDto(3, "Room EF 7.10", 21.2, 20.0)
+        )
+
+        // Fake lights
+        val WINDOWS: List<WindowDto> = listOf(
+            WindowDto(1, "Entry Window", ROOMS[0], Status.CLOSED),
+            WindowDto(2, "Back Window", ROOMS[0], Status.CLOSED),
+            WindowDto(3, "Sliding door", ROOMS[1], Status.OPEN),
+            WindowDto(4, "Window 1", ROOMS[2], Status.CLOSED),
+            WindowDto(5, "Window 2", ROOMS[2], Status.CLOSED),
+        )
+    }
+
+    fun findById(id: Long) = WINDOWS.firstOrNull { it.id == id}
+
+    fun findAll() = WINDOWS.sortedBy { it.name }
+
+}
+```
+## RecyclerView
+
+![RecyclerView](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/55.PNG)
+
+![RecyclerView](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/56.PNG)
+
+- follow the <a href="https://www.youtube.com/watch?v=yflnKerjG0Q">video</a> please
+
+## Create a layout for a list item
+
+1. Select res > layout right click and choose New > Layout resource file
+2. Name your future layout activity_windows_item.xml
+3. Add 3 Textviews
+
+![Add 3 Textviews](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/57.PNG)
+
+![Add 3 Textviews](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/58.PNG)
+
+- just look at the struggle
+```
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!--    <TextView-->
+    <!--        android:id="@+id/txt_status"-->
+    <!--&lt;!&ndash;        app:layout_constraintStart_toStartOf="parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;        app:layout_constraintTop_toTopOf="parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;        android:layout_width="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;        android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--        android:layout_marginStart="16dp"-->
+    <!--        android:layout_marginTop="16dp"-->
+    <!--        android:layout_marginBottom="16dp"-->
+    <!--        android:capitalize="characters"-->
+    <!--        android:textAppearance="@style/TextAppearance.AppCompat.Large"-->
+    <!--        android:textStyle="bold" />-->
+    <!--    -->
+    <!--    <TextView-->
+    <!--        android:id="@+id/txt_window_name"-->
+    <!--&lt;!&ndash;        app:layout_constraintStart_toStartOf="parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;        app:layout_constraintTop_toTopOf="parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;        android:layout_width="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;        android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--        android:layout_marginStart="16dp"-->
+    <!--        android:layout_marginTop="8dp"-->
+    <!--        android:layout_marginEnd="16dp"-->
+    <!--        android:layout_width="0dp"-->
+    <!--&lt;!&ndash;        android:capitalize="characters"&ndash;&gt;-->
+    <!--&lt;!&ndash;        android:textAppearance="@style/TextAppearance.AppCompat.Large"&ndash;&gt;-->
+    <!--&lt;!&ndash;        android:textStyle="bold" &ndash;&gt;-->
+    <!--    />-->
+
+    <!--    <TextView-->
+    <!--        android:id="@+id/txt_window_room"-->
+    <!--        android:layout_width="0dp"-->
+    <!--&lt;!&ndash;        android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--        android:layout_marginStart="16dp"-->
+    <!--        android:layout_marginTop="8dp"-->
+    <!--        android:layout_marginBottom="8dp"-->
+    <!--        android:layout_marginEnd="16dp"-->
+    <!--        android:capitalize="characters"-->
+    <!--        android:textAppearance="@style/TextAppearance.AppCompat.Small"-->
+    <!--&lt;!&ndash;        app:layout_constraintStart_toStartOf="parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;        app:layout_constraintTop_toTopOf="parent" &ndash;&gt;-->
+    <!--        android:capitalize="characters"-->
+    <!--        />-->
+    <!--    -->
+
+    <TextView
+        android:id="@+id/txt_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:capitalize="characters"
+        android:text="TextView"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/txt_window_room"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txt_window_name"
+
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/txt_status"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txt_window_room"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
 
 
+        android:capitalize="characters"
+        android:text="TextView"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/txt_status"
+        app:layout_constraintTop_toBottomOf="@+id/txt_window_name" />
+</android.support.constraint.ConstraintLayout>
+```
+## Create an adapter class
 
+- As we see in previous chapter, an adapter manages the view holder objects. The adapter also binds the view holders to their data. It does this by assigning the view holder to a position.
 
+1. In the Project window, right-click the package com.faircorp.model and right-click and select New > Kotlin File/Class. We will create a new class called WindowsAdapterView
+2. You can copy this code inside
+```
+package com.faircorp.model
 
+import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import com.faircorp.R
 
+class WindowAdapter : RecyclerView.Adapter<WindowAdapter.WindowViewHolder>() { // (1)
 
+    inner class WindowViewHolder(view: View) : RecyclerView.ViewHolder(view) { // (2)
+        val name: TextView = view.findViewById(R.id.txt_window_name)
+        val room: TextView = view.findViewById(R.id.txt_window_room)
+        val status: TextView = view.findViewById(R.id.txt_status)
+    }
 
+    private val items = mutableListOf<WindowDto>() // (3)
 
+    fun update(windows: List<WindowDto>) {  // (4)
+        items.clear()
+        items.addAll(windows)
+        notifyDataSetChanged()
+    }
 
+    override fun getItemCount(): Int = items.size // (5)
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WindowViewHolder { // (6)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.activity_windows_item, parent, false)
+        return WindowViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: WindowViewHolder, position: Int) {  // (7)
+        val window = items[position]
+        holder.apply {
+            name.text = window.name
+            status.text = window.status.toString()
+            room.text = window.room.name
+        }
+    }
+}
+```
+
+![Create an adapter class](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/59.PNG)
+
+## Update activity ListDataActivity
+
+- We need to update ListDataActivity to initialize the recycler view
+
+```
+package com.faircorp
+
+import android.support.v7.app.AppCompatActivity
+import android.os.Bundle
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import com.faircorp.model.WindowAdapter
+import com.faircorp.model.WindowService
+
+//class ListDataActivity : AppCompatActivity() {
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        setContentView(R.layout.activity_list_data)
+//    }
+//}
+
+//open class ListDataActivity : BasicActivity()
+class ListDataActivity : BasicActivity() {
+
+    val windowService = WindowService() // (1)
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_list_data)
+
+        val recyclerView = findViewById<RecyclerView>(R.id.list_windows) // (2)
+        val adapter = WindowAdapter() // (3)
+
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+        recyclerView.setHasFixedSize(true)
+        recyclerView.adapter = adapter
+
+        adapter.update(windowService.findAll()) // (4)
+    }
+}
+```
+![Update activity ListDataActivity](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/60.PNG)
+
+- am not getting the output based on the snapshot
+- Now, I used **ListDataActivity** instead of **WindowsActivity**
+- hence got WindowsActivity and the corresponding activity_windows.xml
+```
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".WindowsActivity">
+
+    <TextView
+        android:id="@+id/txt_building_windows"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Building Windows"
+        tools:layout_editor_absoluteX="160dp"
+        tools:layout_editor_absoluteY="223dp"
+        tools:ignore="MissingConstraints" />
+</android.support.constraint.ConstraintLayout>
+```
+- got the corresponding xml file for ListDataActivity, deleted, because apparently there was some troubles coming up while commenting
+- there were red marks due to ListDataActivity, and hence got that deleted as well
+- WindowsActivity code
+```
+package com.faircorp
+
+import android.support.v7.app.AppCompatActivity
+import android.os.Bundle
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import com.faircorp.model.WindowAdapter
+import com.faircorp.model.WindowService
+
+//class ListDataActivity : AppCompatActivity() {
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        setContentView(R.layout.activity_list_data)
+//    }
+//}
+
+//open class ListDataActivity : BasicActivity()
+class WindowsActivity : BasicActivity() {
+
+    val windowService = WindowService() // (1)
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_windows)
+
+        val recyclerView = findViewById<RecyclerView>(R.id.list_windows) // (2)
+        val adapter = WindowAdapter() // (3)
+
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+        recyclerView.setHasFixedSize(true)
+        recyclerView.adapter = adapter
+
+        adapter.update(windowService.findAll()) // (4)
+    }
+}
+```
+- hoping to change WindowsActivity in the future of these slides
+- moving on
 
 
 
