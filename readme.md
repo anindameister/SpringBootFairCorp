@@ -2482,8 +2482,26 @@ class MainActivity : AppCompatActivity() {
 2. Return to the activity_main.xml file and select the button in the Layout Editor. In Attributes window, locate onClick property and select **openWindow** from its drop-down list, because that's the function we are using
 3. You can now relaunch your app,
     - In window name editext fill a name
-    - Click on the button you a message should be displayed on the bottom of the screen with the ligt name filled
+    - Click on the button you a message should be displayed on the bottom of the screen with the light name filled
 
+### Update app color scheme [optional]
+
+![Update app color scheme](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/41.PNG)
+
+- the above worked by just updating the file, res/values/colors.xml
+```
+<?xml version="1.0" encoding="utf-8"?>
+<!--<resources>-->
+<!--    <color name="colorPrimary">#6200EE</color>-->
+<!--    <color name="colorPrimaryDark">#3700B3</color>-->
+<!--    <color name="colorAccent">#03DAC5</color>-->
+<!--</resources>-->
+<resources>
+    <color name="colorPrimary">#1E88E5</color>
+    <color name="colorPrimaryDark">#0d47a1</color>
+    <color name="colorAccent">#e57b1e</color>
+</resources>
+```
 
 
 
