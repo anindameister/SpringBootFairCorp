@@ -2639,6 +2639,226 @@ class WindowActivity : AppCompatActivity() {
 ```
 ![Manage back button to return on main activity](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/47.PNG)
 
+# https://dev-mind.fr/training/android/android-add-menu.html
+
+## Add a menu in your app
+
+![Add a menu in your app](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/48.PNG)
+
+![Add a menu in your app](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/49.PNG)
+
+## Create a new activity to list data
+
+![Create a new activity to list data](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/50.PNG)
+
+## Create a menu in app bar
+
+![Create a menu in app bar](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/51.PNG)
+
+![Create a menu in app bar](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/52.PNG)
+
+```
+<resources>
+    <string name="app_name">Faircorp</string>
+    <string name="app_logo_description">Faircorp logo</string>
+
+    <string name="act_main_windowname_hint">Ligth name</string>
+    <string name="act_main_welcome">Welcome on faircorp,\n the app to manage building windows</string>
+    <string name="act_main_open_window">Open window</string>
+
+    <string name="menu_windows">Building windows</string>
+    <string name="menu_website">Our website</string>
+    <string name="menu_email">Send us an email</string>
+
+</resources>
+```
+
+5. Add 3 menu entries with an id, a title and option showAsAction to the value never
+- watch the <a href="https://www.youtube.com/watch?v=stUhvg3WXUc">video</a>
+
+6. We will attach this menu to activities MainActivity, WindowActivity and **ListDataActivity**. To prevent the add on each activity, we will create a parent activity and each activities will inherit from this parent activity. Select package com.faircorp, right-click and select New > Activity > Empty Activity. Set the name,BasicActivity
+
+7. In this file you can copy this code
+
+```
+package com.faircorp
+
+import android.content.Intent
+import android.net.Uri
+import android.support.v7.app.AppCompatActivity
+import android.os.Bundle
+import android.support.v4.content.ContextCompat.startActivity
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+
+//class BasicActivity : AppCompatActivity() {
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        setContentView(R.layout.activity_basic2)
+//    }
+//}
+open class BasicActivity : AppCompatActivity()
+```
+8. Update MainActivity, WindowActivity and ListDataActivity and replace AppCompatActivity by BasicActivity
+
+- MainActivity
+```
+package com.faircorp
+
+import android.content.Intent
+import android.support.v7.app.AppCompatActivity
+import android.os.Bundle
+import android.view.View
+import android.widget.EditText
+import android.widget.Toast
+
+
+const val WINDOW_NAME_PARAM = "com.faircorp.windowname.attribute"
+
+//
+//class MainActivity : AppCompatActivity() {
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        setContentView(R.layout.activity_main)
+//    }
+
+
+//    /** Called when the user taps the button */
+//    fun openWindow(view: View) {
+//        // Extract value filled in editext identified with txt_window_name id
+//        val windowName = findViewById<EditText>(R.id.txt_window_name).text.toString()
+//        // Display a message
+//        Toast.makeText(this, "You choose $windowName", Toast.LENGTH_LONG).show()
+//
+//    }
+
+//    /** Called when the user taps the button */
+//    fun openWindow(view: View) {
+//        val windowName = findViewById<EditText>(R.id.txt_window_name).text.toString()
+//
+//        // Do something in response to button
+//        val intent = Intent(this, WindowActivity::class.java).apply {
+//            putExtra(WINDOW_NAME_PARAM, windowName)
+//        }
+//        startActivity(intent)
+//    }
+//}
+open class MainActivity : BasicActivity()
+```
+- WindowActivity
+```
+package com.faircorp
+
+import android.support.v7.app.AppCompatActivity
+import android.os.Bundle
+import android.widget.TextView
+
+//class WindowActivity : AppCompatActivity() {
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        setContentView(R.layout.activity_window)
+//
+//        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+//
+//        val param = intent.getStringExtra(WINDOW_NAME_PARAM)
+//        val windowName = findViewById<TextView>(R.id.txt_window_name)
+//        windowName.text = param
+//    }
+//}
+
+open class WindowActivity : BasicActivity()
+```
+- ListDataActivity
+```
+package com.faircorp
+
+import android.support.v7.app.AppCompatActivity
+import android.os.Bundle
+
+//class ListDataActivity : AppCompatActivity() {
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        setContentView(R.layout.activity_list_data)
+//    }
+//}
+
+open class ListDataActivity : BasicActivity()
+```
+9. We will now activate the menu. Override onCreateOptionsMenu() in BasicActivity. In this method, you can inflate your menu resource in the Menu provided in the callback
+
+```
+package com.faircorp
+
+import android.content.Intent
+import android.net.Uri
+import android.support.v7.app.AppCompatActivity
+import android.os.Bundle
+import android.support.v4.content.ContextCompat.startActivity
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+
+//class BasicActivity : AppCompatActivity() {
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        setContentView(R.layout.activity_basic2)
+//    }
+//}
+open class BasicActivity : AppCompatActivity() {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.menu, menu)
+        return true
+    }
+
+}
+```
+10. When the user selects an item from the options menu (including action items in the app bar), the system calls your activity’s onOptionsItemSelected() method. This method passes the MenuItem selected. We will handle each possible values in BasicActivity class
+```
+package com.faircorp
+
+import android.content.Intent
+import android.net.Uri
+import android.support.v7.app.AppCompatActivity
+import android.os.Bundle
+import android.support.v4.content.ContextCompat.startActivity
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+
+//class BasicActivity : AppCompatActivity() {
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        setContentView(R.layout.activity_basic2)
+//    }
+//}
+open class BasicActivity : AppCompatActivity() {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_windows -> startActivity(
+                Intent(this, ListDataActivity::class.java)
+            )
+            R.id.menu_website -> startActivity(
+                Intent(Intent.ACTION_VIEW, Uri.parse("https://dev-mind.fr"))
+            )
+            R.id.menu_email -> startActivity(
+                Intent(Intent.ACTION_SENDTO, Uri.parse("mailto://guillaume@dev-mind.fr"))
+            )
+
+        }
+        return super.onContextItemSelected(item)
+    }
+}
+```
+
+![Create a menu in app bar](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/53.PNG)
 
 
 
