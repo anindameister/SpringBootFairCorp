@@ -34,4 +34,6 @@ class WindowsActivity : BasicActivity() {
 
         adapter.update(windowService.findAll()) // (4)
     }
+
+
 }
