@@ -34,7 +34,7 @@ new Vue({
 }).$mount('#app')
 ```
 - whatever is put in the console.log would come in the console of the browser once we get into the inspect mode
-- just an observation, the inBuiltServer is taking some time to refresh
+- just an observation, the inBuiltServer is taking some time to refresh 53:57
 
 - having a bit of problem, understanding the emseDude, going to Traversy, would come back if required.
 
