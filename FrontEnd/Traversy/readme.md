@@ -1,20 +1,21 @@
 # vue
 
-![vue](https://github.com/anindameister/WebDevelopmentClass/blob/main/snaps/Traversy/1.PNG)
+![vue](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/Traversy/1.PNG)
 
-![vue](https://github.com/anindameister/WebDevelopmentClass/blob/main/snaps/Traversy/2.PNG)
+
+![vue](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/Traversy/2.PNG)
 
 - spa: singlePageApplication
 
-![vue](https://github.com/anindameister/WebDevelopmentClass/blob/main/snaps/Traversy/3.PNG)
+![vue](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/Traversy/3.PNG)
 
-![vue](https://github.com/anindameister/WebDevelopmentClass/blob/main/snaps/Traversy/4.PNG)
+![vue](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/Traversy/4.PNG)
 
-![vue](https://github.com/anindameister/WebDevelopmentClass/blob/main/snaps/Traversy/5.PNG)
+![vue](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/Traversy/5.PNG)
 
-![vue](https://github.com/anindameister/WebDevelopmentClass/blob/main/snaps/Traversy/6.PNG)
+![vue](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/Traversy/6.PNG)
 
-![vue](https://github.com/anindameister/WebDevelopmentClass/blob/main/snaps/Traversy/7.PNG)
+![vue](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/Traversy/7.PNG)
 
 - the below command in admin mode from windowsStart proabbaly fixed my terminal problem in vsCode
 ```
