@@ -3198,6 +3198,56 @@ class WindowsActivity : BasicActivity() {
 
 ![last part of the 2nd last slide](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/61.PNG)
 
+- everything associated to this slide has been completed
+
+## Call a remote API in Android 
+
+- Followed the below instructions exactly
+
+![Call a remote API in Android ](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/62.PNG)
+
+- Followed the exact instructions
+
+![Call a remote API in Android ](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/63.PNG)
+
+- ApiServices code
+```
+package com.faircorp.model
+
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
+
+class ApiServices {
+    val windowsApiService : WindowApiService by lazy {
+        Retrofit.Builder()
+            .addConverterFactory(MoshiConverterFactory.create())
+            .baseUrl("https://app-420ce9e6-69f1-4afa-8c93-613ae8951e47.cleverapps.io/api/")
+            .build()
+            .create(WindowApiService::class.java)
+    }
+}
+```
+![Call a remote API in Android ](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/64.PNG)
+- followed the above instructions
+
+![Call a remote API in Android ](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/65.PNG)
+
+- followed the exact above instructions
+
+![Call a remote API in Android ](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/66.PNG)
+
+- followed the above instructions
+- checkout my build.gradle file to get the right implementations
+
+![Call a remote API in Android ](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/67.PNG)
+
+- followed the exact instructions above
+
+![Call a remote API in Android ](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/68.PNG)
+
+- followed the above and android works perfectly.
+
+
 
 
 
