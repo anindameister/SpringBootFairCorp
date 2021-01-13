@@ -319,11 +319,7 @@ public class WelcomeService {
 - so we can well realise that for simple usage of method from other class, due to tight-coupling, can cause so much of hassle.
 - to break the hassle, we have a looseCoupling concept and this concept can be implemented by Invesion of Control.
 *****
-### Interface
-- interface is a list of variables and methods.
-- we just list them out. Again, interface is just a list of variables and methods
 
-#### https://www.youtube.com/watch?v=IIvGvfGoLas
 
 - I am ignoring all the above explanations as of right now, because in order to understand those and breaking it up like an artist, it would take me a very long time, it seems right now. I dont have time. So, I am just trying to do the exercise that is expected to be done
 
