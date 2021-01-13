@@ -37,7 +37,7 @@ npm install -g @vue/cli
 ```
 vue create test
 ```
-- there's the regualr way
+- there's the regualr way. There's an irregular way as well, which would require the name change of this parameter in the package.json
 ```
 npm run serve
 ```
@@ -60,3 +60,6 @@ createApp(App).mount('#app')
 ```
 <div id="app"></div>
 ```
+- this **index.html** is the place where the SPA stuff is happening and the above mentioned div thingy is the place holder for JS or in this case, vue stuff
+
+- **Vetur by Pine Wu** is the extension for vsCode in regards to vue

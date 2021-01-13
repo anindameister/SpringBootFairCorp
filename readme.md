@@ -3198,7 +3198,9 @@ class WindowsActivity : BasicActivity() {
 ```
 - hoping to change WindowsActivity in the future of these slides
 - moving on
+- The entire system of Android has been upgraded to androidX, the new folder name is FairCorp2
 
+![last part of the 2nd last slide](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/61.PNG)
 
 
 
