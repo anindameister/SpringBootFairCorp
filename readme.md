@@ -3247,8 +3247,9 @@ class ApiServices {
 
 - followed the above and android works perfectly.
 
+![Call a remote API in Android ](https://github.com/anindameister/SpringBootFairCorp/blob/main/snaps/69.PNG)
 
-
+- the above is the proof photo that everything works perfectly with android
 
 
 
